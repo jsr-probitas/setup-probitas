@@ -7,8 +7,8 @@ branding:
 
 inputs:
   deno-version:
-    description: "The Deno version to install. Can be a semver version, 'canary', 'lts', 'rc', or 'stable'."
-    default: "stable"
+    description: "The Deno version to install. Can be a semver version, 'canary', 'lts', or a Git hash."
+    default: "2.x"
   probitas-version:
     description: "The Probitas version to install. Can be a semver version or 'latest'."
     default: "latest"

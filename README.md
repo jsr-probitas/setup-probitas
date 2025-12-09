@@ -31,7 +31,7 @@ jobs:
 
       - uses: jsr-probitas/setup-probitas@v1
         with:
-          deno-version: stable
+          deno-version: 2.x
           probitas-version: latest
           cache: true
 
@@ -43,7 +43,7 @@ jobs:
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `deno-version` | The Deno version to install. Can be a semver version, `stable`, `lts`, `rc`, or `canary`. | `stable` |
+| `deno-version` | The Deno version to install. Can be a semver version (e.g., `2.0.0`, `2.x`), `canary`, `lts`, or a Git hash. | `2.x` |
 | `probitas-version` | The Probitas version to install from JSR. Can be a semver version or `latest`. | `latest` |
 | `cache` | Cache downloaded modules & packages automatically in GitHub Actions cache. | `true` |
 | `cache-hash` | A hash used as part of the cache key, which defaults to a hash of the deno.lock files. | - |
@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deno-version: [stable, lts, "2.0.0"]
+        deno-version: ["2.x", lts, "2.0.0"]
     steps:
       - uses: actions/checkout@v4
 

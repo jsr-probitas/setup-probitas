@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deno-version: [stable, lts]
+        deno-version: ["2.x", lts]
         probitas-version: [latest]
     steps:
       - uses: actions/checkout@v4
