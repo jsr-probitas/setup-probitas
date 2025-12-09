@@ -160,6 +160,28 @@ The cache key is automatically generated based on:
 - The runner OS and architecture
 - A hash of `deno.lock` files in your project (customizable via `cache-hash`)
 
+## Versioning
+
+This action follows semantic versioning. When a new version is released (e.g., `v1.0.0`), the following tags are automatically updated:
+
+- `v1` - Points to the latest `v1.x.x` release
+- `v1.0` - Points to the latest `v1.0.x` release
+
+### Recommended Usage
+
+```yaml
+# Recommended: Use major version for automatic updates
+- uses: jsr-probitas/setup-probitas@v1
+
+# Alternative: Pin to major.minor for more control
+- uses: jsr-probitas/setup-probitas@v1.0
+
+# Alternative: Pin to exact version for maximum stability
+- uses: jsr-probitas/setup-probitas@v1.0.0
+```
+
+Using `@v1` ensures you automatically receive bug fixes and new features within the v1 major version, while avoiding breaking changes.
+
 ## Related Projects
 
 - [Probitas](https://github.com/jsr-probitas/probitas) - The main Probitas framework

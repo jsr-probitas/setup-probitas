@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  update-version-tags:
+    name: Update Version Tags
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update major and minor version tags
+        uses: haya14busa/action-update-semver@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version info
+        id: version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+          if [[ $TAG =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            MAJOR="${BASH_REMATCH[1]}"
+            MINOR="${BASH_REMATCH[2]}"
+            PATCH="${BASH_REMATCH[3]}"
+            echo "major=$MAJOR" >> $GITHUB_OUTPUT
+            echo "minor=$MINOR" >> $GITHUB_OUTPUT
+            echo "patch=$PATCH" >> $GITHUB_OUTPUT
+            echo "✅ Processed version: v$MAJOR.$MINOR.$PATCH"
+            echo "📌 Updated tags: v$MAJOR, v$MAJOR.$MINOR"
+          else
+            echo "⚠️ Tag format invalid: $TAG (expected: v*.*.* format)"
+            exit 1
+          fi
+
+      - name: Create release summary
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << EOF
+          ## 🎉 Release Published
+
+          **Version:** \`${{ steps.version.outputs.tag }}\`
+
+          ### Automatically Updated Tags
+
+          - \`v${{ steps.version.outputs.major }}\` → Points to \`${{ steps.version.outputs.tag }}\`
+          - \`v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}\` → Points to \`${{ steps.version.outputs.tag }}\`
+
+          ### Usage Examples
+
+          \`\`\`yaml
+          # Use major version (recommended for stability)
+          - uses: jsr-probitas/setup-probitas@v${{ steps.version.outputs.major }}
+
+          # Use major.minor version (for more control)
+          - uses: jsr-probitas/setup-probitas@v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
+
+          # Use specific version (pin exact release)
+          - uses: jsr-probitas/setup-probitas@${{ steps.version.outputs.tag }}
+          \`\`\`
+          EOF
