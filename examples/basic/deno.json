@@ -1,9 +1,0 @@
-{
-  "imports": {
-    "probitas": "jsr:@probitas/probitas"
-  },
-  "probitas": {
-    "includes": ["probitas/**/*.probitas.ts"],
-    "reporter": "list"
-  }
-}

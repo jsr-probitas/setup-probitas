@@ -30,14 +30,23 @@ jobs:
         run: |
           probitas --version
           probitas --help
+
+      - name: List probitas scenarios
+        run: |
           probitas list
+
+      - name: Run probitas scenarios
+        run: |
+          probitas run
 
   test-versions:
     name: Test Version Selection
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        probitas-version: [latest]
+        probitas-version:
+          - 0.7.3
+          - latest
     steps:
       - uses: actions/checkout@v4
 
