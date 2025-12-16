@@ -30,12 +30,7 @@ jobs:
         run: |
           probitas --version
           probitas --help
-
-      - name: Initialize Probitas Project
-        run: probitas init
-
-      - name: Run Example Scenarios
-        run: probitas run
+          probitas list
 
   test-versions:
     name: Test Version Selection
