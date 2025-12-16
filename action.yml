@@ -55,8 +55,9 @@ runs:
           exit 1
         fi
 
-        # Get installed version
-        INSTALLED_VERSION=$(probitas --version 2>&1 | head -n 1)
+        # Get installed version (use temp file to avoid SIGPIPE with pipefail)
+        INSTALLED_VERSION=$(probitas --version 2>&1 || true)
+        INSTALLED_VERSION=$(echo "$INSTALLED_VERSION" | head -n 1)
         echo "Installed: $INSTALLED_VERSION"
         echo "probitas-version=$INSTALLED_VERSION" >> $GITHUB_OUTPUT
 
