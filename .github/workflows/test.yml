@@ -8,22 +8,26 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-basic:
-    name: Test Basic Setup
+  test:
+    name: Test (${{ matrix.os }}, ${{ matrix.probitas-version }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        probitas-version: [latest, 0.7.3]
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Probitas
         uses: ./
         id: setup
+        with:
+          probitas-version: ${{ matrix.probitas-version }}
 
       - name: Verify Outputs
         shell: bash
         run: |
+          echo "Deno Version: ${{ steps.setup.outputs.deno-version }}"
           echo "Probitas Version: ${{ steps.setup.outputs.probitas-version }}"
 
       - name: Test Probitas CLI
@@ -31,29 +35,20 @@ jobs:
           probitas --version
           probitas --help
 
-      - name: List probitas scenarios
+      - name: Create Test Scenario
+        shell: bash
         run: |
-          probitas list
+          mkdir -p probitas
+          cat > probitas/test.probitas.ts << 'EOF'
+          import { scenario } from "jsr:@probitas/probitas";
 
-      - name: Run probitas scenarios
-        run: |
-          probitas run
+          export default scenario("Test Scenario")
+            .step("Hello", () => {
+              console.log("Hello from Probitas!");
+              return { success: true };
+            })
+            .build();
+          EOF
 
-  test-versions:
-    name: Test Version Selection
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        probitas-version:
-          - 0.7.3
-          - latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Probitas with ${{ matrix.probitas-version }}
-        uses: ./
-        with:
-          probitas-version: ${{ matrix.probitas-version }}
-
-      - name: Verify Installation
-        run: probitas --version
+      - name: Run Probitas
+        run: probitas run
