@@ -1,71 +1,49 @@
 name: "Setup Probitas"
-description: "Setup Probitas by installing Deno and Probitas CLI, and adding them to the path."
+description: "Setup Probitas by installing Probitas CLI and adding it to the path."
 author: "JSR Probitas"
 branding:
   icon: "check-circle"
   color: "green"
 
 inputs:
-  deno-version:
-    description: "The Deno version to install. Can be a semver version, 'canary', 'lts', or a Git hash."
-    default: "2.x"
   probitas-version:
     description: "The Probitas version to install. Can be a semver version or 'latest'."
     default: "latest"
-  cache:
-    description: "Cache downloaded modules & packages automatically in GitHub Actions cache."
-    default: "true"
-  cache-hash:
-    description: "A hash used as part of the cache key, which defaults to a hash of the deno.lock files."
 
 outputs:
-  cache-hit:
-    description: "A boolean indicating whether the cache was hit."
-    value: ${{ steps.setup-deno.outputs.cache-hit }}
-  deno-version:
-    description: "The Deno version that was installed."
-    value: ${{ steps.setup-deno.outputs.deno-version }}
   probitas-version:
     description: "The Probitas version that was installed."
-    value: ${{ steps.install-probitas.outputs.probitas-version }}
+    value: ${{ steps.verify-probitas.outputs.probitas-version }}
 
 runs:
   using: "composite"
   steps:
-    - name: Setup Deno
-      id: setup-deno
-      uses: denoland/setup-deno@v2
-      with:
-        deno-version: ${{ inputs.deno-version }}
-        cache: ${{ inputs.cache }}
-        cache-hash: ${{ inputs.cache-hash }}
-
     - name: Install Probitas CLI
       id: install-probitas
       shell: bash
+      env:
+        PROBITAS_VERSION: ${{ inputs.probitas-version != 'latest' && inputs.probitas-version || '' }}
+        PROBITAS_INSTALL_DIR: ${{ runner.temp }}/probitas-bin
       run: |
-        if [ "${{ inputs.probitas-version }}" = "latest" ]; then
-          VERSION_FLAG=""
-        else
-          VERSION_FLAG="@${{ inputs.probitas-version }}"
-        fi
+        echo "Installing Probitas CLI${PROBITAS_VERSION:+ version $PROBITAS_VERSION}..."
+        curl -fsSL https://raw.githubusercontent.com/jsr-probitas/cli/main/install.sh | bash
 
-        echo "Installing Probitas CLI${VERSION_FLAG:+ version ${{ inputs.probitas-version }}}..."
-        deno install -grAf -n probitas "jsr:@probitas/cli${VERSION_FLAG}"
+        # Add to PATH
+        echo "$PROBITAS_INSTALL_DIR" >> $GITHUB_PATH
 
+    - name: Verify Probitas
+      id: verify-probitas
+      shell: bash
+      env:
+        PROBITAS_INSTALL_DIR: ${{ runner.temp }}/probitas-bin
+      run: |
         # Verify installation
-        if ! command -v probitas &> /dev/null; then
+        if ! "$PROBITAS_INSTALL_DIR/probitas" --version &> /dev/null; then
           echo "Error: Probitas CLI installation failed"
           exit 1
         fi
 
         # Get installed version
-        INSTALLED_VERSION=$(probitas --version 2>&1 | head -n 1)
+        INSTALLED_VERSION=$("$PROBITAS_INSTALL_DIR/probitas" --version 2>&1 | head -n 1)
         echo "Installed: $INSTALLED_VERSION"
         echo "probitas-version=$INSTALLED_VERSION" >> $GITHUB_OUTPUT
-
-    - name: Verify Probitas
-      shell: bash
-      run: |
-        echo "Probitas CLI is ready:"
-        probitas --version

@@ -1,12 +1,12 @@
 # setup-probitas
 
-Set up your GitHub Actions workflow with [Probitas](https://github.com/jsr-probitas/probitas), a scenario-based testing framework for Deno.
+Set up your GitHub Actions workflow with [Probitas](https://github.com/jsr-probitas/probitas), a scenario-based testing framework.
 
 ## Usage
 
 ### Basic Setup
 
-The simplest setup installs the latest stable Deno and Probitas versions:
+The simplest setup installs the latest stable Probitas version:
 
 ```yaml
 - uses: jsr-probitas/setup-probitas@v1
@@ -30,10 +30,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: jsr-probitas/setup-probitas@v1
-        with:
-          deno-version: 2.x
-          probitas-version: latest
-          cache: true
 
       - name: Run Probitas tests
         run: probitas run
@@ -43,57 +39,27 @@ jobs:
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| `deno-version` | The Deno version to install. Can be a semver version (e.g., `2.0.0`, `2.x`), `canary`, `lts`, or a Git hash. | `2.x` |
-| `probitas-version` | The Probitas version to install from JSR. Can be a semver version or `latest`. | `latest` |
-| `cache` | Cache downloaded modules & packages automatically in GitHub Actions cache. | `true` |
-| `cache-hash` | A hash used as part of the cache key, which defaults to a hash of the deno.lock files. | - |
+| `probitas-version` | The Probitas version to install from GitHub releases. Can be a semver version or `latest`. | `latest` |
 
 ## Outputs
 
 | Output | Description |
 |--------|-------------|
-| `cache-hit` | A boolean indicating whether the cache was hit. |
-| `deno-version` | The Deno version that was installed. |
 | `probitas-version` | The Probitas version that was installed. |
 
 ## Examples
 
-### Specify Versions
+### Specify Version
 
 ```yaml
 - uses: jsr-probitas/setup-probitas@v1
   with:
-    deno-version: "2.1.0"
-    probitas-version: "0.1.0"
-```
-
-### Use LTS Deno
-
-```yaml
-- uses: jsr-probitas/setup-probitas@v1
-  with:
-    deno-version: lts
-```
-
-### Disable Cache
-
-```yaml
-- uses: jsr-probitas/setup-probitas@v1
-  with:
-    cache: false
-```
-
-### Custom Cache Key
-
-```yaml
-- uses: jsr-probitas/setup-probitas@v1
-  with:
-    cache-hash: ${{ hashFiles('**/deno.json', '**/deno.lock') }}
+    probitas-version: "0.7.1"
 ```
 
 ### Matrix Testing
 
-Test across multiple Deno versions:
+Test across multiple Probitas versions:
 
 ```yaml
 jobs:
@@ -101,13 +67,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deno-version: ["2.x", lts, "2.0.0"]
+        probitas-version: ["latest", "0.7.0", "0.7.1"]
     steps:
       - uses: actions/checkout@v4
 
       - uses: jsr-probitas/setup-probitas@v1
         with:
-          deno-version: ${{ matrix.deno-version }}
+          probitas-version: ${{ matrix.probitas-version }}
 
       - run: probitas run
 ```
@@ -143,22 +109,8 @@ jobs:
 
 This action performs the following steps:
 
-1. **Setup Deno**: Uses [denoland/setup-deno](https://github.com/denoland/setup-deno) to install Deno with the specified version and cache configuration
-2. **Install Probitas CLI**: Installs the Probitas CLI from JSR using `deno install`
-3. **Verify Installation**: Confirms both Deno and Probitas are correctly installed and available in the PATH
-
-## Caching
-
-Caching is enabled by default and helps speed up your workflows by:
-
-- Caching Deno's compiled module cache
-- Caching downloaded dependencies based on your `deno.lock` file
-- Reducing network requests and installation time
-
-The cache key is automatically generated based on:
-- The GitHub job ID
-- The runner OS and architecture
-- A hash of `deno.lock` files in your project (customizable via `cache-hash`)
+1. **Install Probitas CLI**: Downloads and installs the pre-compiled Probitas CLI binary from GitHub releases
+2. **Verify Installation**: Confirms Probitas is correctly installed and available in the PATH
 
 ## Versioning
 
@@ -185,7 +137,7 @@ Using `@v1` ensures you automatically receive bug fixes and new features within 
 ## Related Projects
 
 - [Probitas](https://github.com/jsr-probitas/probitas) - The main Probitas framework
-- [setup-deno](https://github.com/denoland/setup-deno) - Deno setup action (used internally)
+- [Probitas CLI](https://github.com/jsr-probitas/cli) - The Probitas CLI
 
 ## License
 
