@@ -24,8 +24,6 @@ jobs:
       - name: Verify Outputs
         shell: bash
         run: |
-          echo "Cache Hit: ${{ steps.setup.outputs.cache-hit }}"
-          echo "Deno Version: ${{ steps.setup.outputs.deno-version }}"
           echo "Probitas Version: ${{ steps.setup.outputs.probitas-version }}"
 
       - name: Test Probitas CLI
@@ -44,64 +42,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        deno-version: ["2.x", lts]
         probitas-version: [latest]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Probitas with ${{ matrix.deno-version }}
+      - name: Setup Probitas with ${{ matrix.probitas-version }}
         uses: ./
         with:
-          deno-version: ${{ matrix.deno-version }}
           probitas-version: ${{ matrix.probitas-version }}
-
-      - name: Verify Installation
-        run: |
-          deno --version
-          probitas --version
-
-  test-caching:
-    name: Test Caching
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Probitas with Cache
-        uses: ./
-        id: setup-with-cache
-        with:
-          cache: true
-
-      - name: Create Test Scenario
-        run: |
-          mkdir -p probitas
-          cat > probitas/test.probitas.ts << 'EOF'
-          import { scenario } from "probitas";
-
-          export default scenario("Test Scenario")
-            .step("Hello", () => {
-              console.log("Hello from Probitas!");
-              return { success: true };
-            })
-            .build();
-          EOF
-
-      - name: Run Test
-        run: probitas run
-
-      - name: Check Cache Hit
-        run: echo "Cache was ${{ steps.setup-with-cache.outputs.cache-hit && 'hit' || 'missed' }}"
-
-  test-no-cache:
-    name: Test Without Cache
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Probitas without Cache
-        uses: ./
-        with:
-          cache: false
 
       - name: Verify Installation
         run: probitas --version
