@@ -55,12 +55,12 @@ jobs:
 
           \`\`\`yaml
           # Use major version (recommended for stability)
-          - uses: jsr-probitas/setup-probitas@v${{ steps.version.outputs.major }}
+          - uses: probitas-test/setup-probitas@v${{ steps.version.outputs.major }}
 
           # Use major.minor version (for more control)
-          - uses: jsr-probitas/setup-probitas@v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
+          - uses: probitas-test/setup-probitas@v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
 
           # Use specific version (pin exact release)
-          - uses: jsr-probitas/setup-probitas@${{ steps.version.outputs.tag }}
+          - uses: probitas-test/setup-probitas@${{ steps.version.outputs.tag }}
           \`\`\`
           EOF

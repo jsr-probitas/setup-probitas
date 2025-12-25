@@ -1,6 +1,6 @@
 # setup-probitas
 
-Set up your GitHub Actions workflow with [Probitas](https://github.com/jsr-probitas/probitas), a scenario-based testing framework.
+Set up your GitHub Actions workflow with [Probitas](https://github.com/probitas-test/probitas), a scenario-based testing framework.
 
 ## Usage
 
@@ -9,7 +9,7 @@ Set up your GitHub Actions workflow with [Probitas](https://github.com/jsr-probi
 The simplest setup installs the latest stable Probitas version:
 
 ```yaml
-- uses: jsr-probitas/setup-probitas@v1
+- uses: probitas-test/setup-probitas@v1
 ```
 
 ### Full Example Workflow
@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: jsr-probitas/setup-probitas@v1
+      - uses: probitas-test/setup-probitas@v1
 
       - name: Run Probitas tests
         run: probitas run
@@ -52,7 +52,7 @@ jobs:
 ### Specify Version
 
 ```yaml
-- uses: jsr-probitas/setup-probitas@v1
+- uses: probitas-test/setup-probitas@v1
   with:
     probitas-version: "0.7.1"
 ```
@@ -71,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: jsr-probitas/setup-probitas@v1
+      - uses: probitas-test/setup-probitas@v1
         with:
           probitas-version: ${{ matrix.probitas-version }}
 
@@ -81,7 +81,7 @@ jobs:
 ### Run with Selectors and Tags
 
 ```yaml
-- uses: jsr-probitas/setup-probitas@v1
+- uses: probitas-test/setup-probitas@v1
 
 - name: Run integration tests
   run: probitas run -s tag:integration
@@ -101,7 +101,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: jsr-probitas/setup-probitas@v1
+      - uses: probitas-test/setup-probitas@v1
       - run: probitas run
 ```
 
@@ -123,21 +123,21 @@ This action follows semantic versioning. When a new version is released (e.g., `
 
 ```yaml
 # Recommended: Use major version for automatic updates
-- uses: jsr-probitas/setup-probitas@v1
+- uses: probitas-test/setup-probitas@v1
 
 # Alternative: Pin to major.minor for more control
-- uses: jsr-probitas/setup-probitas@v1.0
+- uses: probitas-test/setup-probitas@v1.0
 
 # Alternative: Pin to exact version for maximum stability
-- uses: jsr-probitas/setup-probitas@v1.0.0
+- uses: probitas-test/setup-probitas@v1.0.0
 ```
 
 Using `@v1` ensures you automatically receive bug fixes and new features within the v1 major version, while avoiding breaking changes.
 
 ## Related Projects
 
-- [Probitas](https://github.com/jsr-probitas/probitas) - The main Probitas framework
-- [Probitas CLI](https://github.com/jsr-probitas/cli) - The Probitas CLI
+- [Probitas](https://github.com/probitas-test/probitas) - The main Probitas framework
+- [Probitas CLI](https://github.com/probitas-test/cli) - The Probitas CLI
 
 ## License
 
