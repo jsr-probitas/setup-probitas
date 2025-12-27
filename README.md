@@ -136,8 +136,7 @@ Using `@v1` ensures you automatically receive bug fixes and new features within 
 
 ## Related Projects
 
-- [Probitas](https://github.com/probitas-test/probitas) - The main Probitas framework
-- [Probitas CLI](https://github.com/probitas-test/cli) - The Probitas CLI
+- [Probitas](https://github.com/probitas-test/probitas) - The Probitas framework and CLI
 
 ## License
 

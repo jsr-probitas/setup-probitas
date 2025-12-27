@@ -47,7 +47,7 @@ runs:
         PROBITAS_VERSION: ${{ inputs.probitas-version != 'latest' && inputs.probitas-version || '' }}
       run: |
         echo "Installing Probitas CLI${PROBITAS_VERSION:+ version $PROBITAS_VERSION}..."
-        curl -fsSL https://raw.githubusercontent.com/probitas-test/cli/main/install.sh | sh
+        curl -fsSL https://raw.githubusercontent.com/probitas-test/probitas/main/install.sh | sh
 
         # Verify installation
         if ! command -v probitas &> /dev/null; then
